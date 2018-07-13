@@ -11,6 +11,7 @@ import csv
 import hone
 import ast
 import pymongo
+import gspread
 
 from apiclient import discovery
 from httplib2 import Http
@@ -62,6 +63,23 @@ def splitting_dict(dicts):
                 split_dict[key] = value
     split_dict_list.append(split_dict)
 
+
+# clear_spreadsheet clears the spreadsheet of all values (only keeping key names) using Google Sheets APIs
+def clear_spreadsheet(spreadsheet_id):
+    SHEETS_SCOPES = ['https://spreadsheets.google.com/feeds', 'http://www.googleapis.com/auth/drive']
+    sheets_store = file.Storage("sheets_credentials.json")
+    sheets_creds = sheets_store.get()
+    if not sheets_creds or sheets_creds.invalid:
+        sheets_flow = client.flow_from_clientsecrets("sheets_client_secret.json", SHEETS_SCOPES)
+        sheets_creds = tools.tun_flow(sheets_flow, sheets_store)
+    SHEETS_DRIVE = discovery.build("sheets", "v4", http=sheets_creds.authorize(Http()))
+    gc = gspread.authorize(sheets_creds)
+    spreadsheet = gc.open_by_key(spreadsheet_id)
+    worksheet = spreadsheet.sheet1
+    worksheet.resize(rows=1)
+    worksheet.resize(rows=30)
+    print("Spreadsheet cleared!")
+
 # schema_checker downloads the spreadsheet, converts it to json format, and checks if it is valid
 # if valid, it then uploads to MongoDB and prints the resulting ID number for each sample uploaded
 def schema_checker(google_file):
@@ -90,6 +108,7 @@ def schema_checker(google_file):
                 print('Sample %s validation complete!' % number) # prints only if no error occurs during validation step
                 doc_id = coll.insert_one(data).inserted_id # insert validated schema into MongoDB
                 print('The ID for this document is: ', doc_id)
+                clear_spreadsheet(FILEID) # spreadsheet is only cleared if doc SUCCESSFULLY uploads to MongoDB
         else:
             print("ERROR: could not download file")
     else:
@@ -145,6 +164,7 @@ if not creds or creds.invalid:
 DRIVE = discovery.build("drive", "v3", http=creds.authorize(Http()))
 
 FILENAME = str(input("Please enter filename: "))
+FILEID = str(input("Please enter file ID: "))
 SRC_MIMETYPE = "application/vnd.google-apps.spreadsheet"  # source file type
 DST_MIMETYPE = "text/csv"  # exported file type
 
