@@ -1,0 +1,41 @@
+{
+  "sample": {
+      "name": "titanium dioxide",
+      "sample_group_PI": "Eli Stavitski",
+      "sample_maker": "Eli Stavitski",
+      "collaborators": "Sabrina Hernandez",
+      "sample_prep_start_date": "6/23/2018",
+      "constituents": {
+          "name": "titanium",
+          "chemical_formula": "TiO2",
+          "chemical_name_common": "null",
+          "chemical_name_mineral": "anatase",
+          "phase_state": "powder",
+          "cif_url": "http://rruff.geo.arizona.edu/AMS/minerals/Anatase",
+          "cif_database_id": "null",
+      },
+      "tags": "powder",
+      "container" : {
+          "geometry": {
+              "holder_type": "capillary",
+              "diameter_mm": "1",
+              "length_mm": "",
+          }
+          "in_beam_constituents": {
+              "name": "silicon dioxide",
+              "description": "null",
+              "chemical_formula": "SiO2",
+              "chemical_name_common": "null",
+              "chemical_name_mineral": "null",
+              "sample_dilutant": "boron nitride",
+          },
+          "out_of_beam_constituents": {
+              "name": "",
+              "description": "",
+              "chemical_formula": "",
+              "chemical_name_common": "", 
+              "chemical_name_mineral": ""
+          }
+      }
+  }
+}
